@@ -10,12 +10,16 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 Button btnPlay,btnPause;
     MediaPlayer mPlayer;
     ImageView imView;
     Handler hld;
+    SeekBar sk;
+    TextView tk;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,23 +29,38 @@ Button btnPlay,btnPause;
         btnPause = (Button) findViewById(R.id.pause);
         hld = new Handler();
          mPlayer =  MediaPlayer.create(this,R.raw.music);
-imView = (ImageView) findViewById(R.id.imageView);
+        imView = (ImageView) findViewById(R.id.imageView);
+        sk = (SeekBar) findViewById(R.id.seekBar2);
+        tk = (TextView) findViewById(R.id.textView) ;
 
+
+       //max size will be set based on the record
+        sk.setMax(1000);
+        sk.setProgress(0);
         final Animation anime = AnimationUtils.loadAnimation(this,R.anim.rotate);
     btnPlay.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             mPlayer.start();
+            Integer dr = mPlayer.getDuration();
+            // convert dr into minutes and seconds
+            String d = dr.toString();
+
+            tk.setText(d);
+            sk.setMax(dr);
            // imView.startAnimation(anime);
 //            imView.setRotation(45);
 
             Runnable r = new Runnable() {
-                int m = 0;
+                Integer m = 0;
+                Integer s = 0;
                 @Override
                 public void run() {
 
                     imView.setRotation(m = m + 10);
                     hld.postDelayed(this,50);
+//                    tk.setText(s);
+                    sk.setProgress(s = s + 20 );
                 }
             };
             hld.postDelayed(r, 50);
